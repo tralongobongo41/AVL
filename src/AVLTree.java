@@ -66,35 +66,27 @@ public class AVLTree {
         {
             recurseInsert(root, value);
         }
-
-        updateHeight();
     }
 
     //HELPER
-    public void recurseInsert(Node current, int value)
+    public Node recurseInsert(Node current, int value)
     {
         if(current.data > value)
         {
             if(current.left == null)
-            {
                 current.left = new Node(value);
-            }
             else
-            {
-                recurseInsert(current.left, value);
-            }
+                current.left = recurseInsert(current.left, value);
         }
         if(current.data < value)
         {
             if(current.right == null)
-            {
                 current.right = new Node(value);
-            }
             else
-            {
-                recurseInsert(current.right, value);
-            }
+                current.right = recurseInsert(current.right, value);
         }
+
+        return rebalancing(current);
     }
 
     //DELETE
@@ -444,39 +436,65 @@ public class AVLTree {
         int balance = getBalanceFactor(rootNode);
 
         //IF tree is right-heavy (BF less than -1)
-        if(balance < -1)
-        {
+        if(balance < -1) {
+
             //IF right subtree is left-heavy (BF more than 1)
-            if(getBalanceFactor(rootNode.right) > 1))
-            {
-                //RL - RL rotation ( just R rotation inside the IF statement)
+            if (getBalanceFactor(rootNode.right) > 0) {
+                //RL - RL rotation (R rotation on right subtree inside the IF statement)
+                rootNode.right = rightRotation(rootNode.right);
             }
 
             //L rotation
             return leftRotation(rootNode);
-
+        }
 
         //ELSE IF tree is left heavy (BF more than 1)
-        else if(balance > 1)
+        else if(balance > 1) {
 
             //IF left subtree is right-heavy (BF less than -1)
-            if(getBalanceFactor(rootNode.right) < -1))
-            {
-                //LR - LR rotation (just L rotation inside the IF statement)
-
+            if (getBalanceFactor(rootNode.left) < 0) {
+                //LR - LR rotation (L rotation on left subtree inside the IF statement)
+                rootNode.left = leftRotation(rootNode.left);
             }
 
             //R rotation
             return rightRotation(rootNode);
+        }
+
+        return rootNode; //no rotations
     }
 
-    public Node rightRotation(Node node)
+    public Node leftRotation(Node a)
     {
-        return node;
+        Node b = a.right;
+        Node subtreeBetween = b.left;
+
+        //don't need to account for C
+
+        b.left = a;
+        a.right = subtreeBetween;
+
+        //update heights
+        updateHeight(a);
+        updateHeight(b);
+
+        return b;
     }
 
-    public Node leftRotation(Node node)
+    public Node rightRotation(Node a)
     {
-        return node;
+        Node b = a.left;
+        Node subtreeBetween = b.right;
+
+        //again, don't need to account for C
+
+        b.right = a;
+        a.left = subtreeBetween;
+
+        //update heights
+        updateHeight(a);
+        updateHeight(b);
+
+        return b;
     }
 }
