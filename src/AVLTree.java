@@ -170,7 +170,6 @@ public class AVLTree {
                 deleteWithTwoChildren(willDelete);
         }
 
-        updateHeight();
     }
 
     //helper method for delete that handles the two-children case
@@ -266,9 +265,9 @@ public class AVLTree {
     }
 
     //UPDATE HEIGHT (HELPER)
-    public void updateHeight()
+    public void updateHeight(Node node)
     {
-        root.height = getHeight();
+        node.height = getHeight(node);
     }
 
 
@@ -439,35 +438,45 @@ public class AVLTree {
         return getHeight(current.left) - getHeight(current.right);
     }
 
-    public void rotation(Node rootNode)
+    public Node rebalancing(Node rootNode)
     {
+        updateHeight(rootNode);
+        int balance = getBalanceFactor(rootNode);
 
         //IF tree is right-heavy (BF less than -1)
-        if(getBalanceFactor(rootNode) < -1)
+        if(balance < -1)
         {
             //IF right subtree is left-heavy (BF more than 1)
             if(getBalanceFactor(rootNode.right) > 1))
             {
-                //RL - RL rotation
-
+                //RL - RL rotation ( just R rotation inside the IF statement)
             }
 
-            //ELSE
-            else
-            {
-                //RR - L rotation
+            //L rotation
+            return leftRotation(rootNode);
 
-            }
 
         //ELSE IF tree is left heavy (BF more than 1)
-        else if()
+        else if(balance > 1)
 
             //IF left subtree is right-heavy (BF less than -1)
-                //LR - LR rotation
-            //ELSE
-                //LL - R rotation
+            if(getBalanceFactor(rootNode.right) < -1))
+            {
+                //LR - LR rotation (just L rotation inside the IF statement)
 
+            }
 
+            //R rotation
+            return rightRotation(rootNode);
+    }
 
+    public Node rightRotation(Node node)
+    {
+        return node;
+    }
+
+    public Node leftRotation(Node node)
+    {
+        return node;
     }
 }
